@@ -364,7 +364,7 @@ const App: React.FC = () => {
               <div className="relative animate-in fade-in zoom-in duration-1000 delay-300">
                 <div className="absolute -inset-10 bg-primary/10 blur-[120px] rounded-full opacity-60"></div>
                 <div className="relative rounded-apple-2xl overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] border-[10px] border-white dark:border-apple-dark aspect-square lg:aspect-[4/5] transform hover:rotate-1 transition-transform duration-700">
-                  <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=1400" className="w-full h-full object-cover" alt="Service Excellence" />
+                <img src={HeroImage} className="w-full h-full object-cover" alt="Service Excellence" />
                 </div>
               </div>
             </section>
