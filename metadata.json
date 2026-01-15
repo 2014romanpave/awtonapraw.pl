@@ -1,0 +1,7 @@
+{
+  "name": "Morozovych Ihor Auto Repair",
+  "description": "Professional auto repair services in Poland for the Ukrainian community, featuring diagnostics, engine repair, oil changes, and brake systems.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

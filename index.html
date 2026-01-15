@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="uk" class="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWTONAPRAW.PL | Auto Excellence Poznań</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0066cc",
+                        "apple-gray": "#f5f5f7",
+                        "apple-dark": "#1d1d1f",
+                        "background-light": "#ffffff",
+                        "background-dark": "#000000",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "apple": "20px",
+                        "apple-xl": "32px",
+                        "apple-2xl": "44px"
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        html { scroll-behavior: smooth; }
+        body { -webkit-font-smoothing: antialiased; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: saturate(180%) blur(20px); }
+        .dark .glass { background: rgba(29, 29, 31, 0.7); backdrop-filter: saturate(180%) blur(20px); }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-apple-dark dark:text-apple-gray transition-colors duration-500">
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
