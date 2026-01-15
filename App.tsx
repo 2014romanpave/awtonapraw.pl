@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 // Импорты всех картинок
 const HeroImage = new URL('./src/assets/images/hero-main.jpg', import.meta.url).href;
-const DiagnosticsImage = new URL('./src/assets/images/Toyota-Mark.jpg', import.meta.url).href;
+const DiagnosticsImage = new URL('./src/assets/images/diagnostics.jpg', import.meta.url).href;
 const EngineImage = new URL('./src/assets/images/engine.jpg', import.meta.url).href;
 const OilImage = new URL('./src/assets/images/oil.jpg', import.meta.url).href;
 const BrakesImage = new URL('./src/assets/images/brakes.jpg', import.meta.url).href;
