@@ -122,54 +122,67 @@ const TRANSLATIONS: Record<Lang, TranslationSet> = {
 };
 
 const SERVICES_DATA: ServiceDetails[] = [
-  { 
-    id: 'diag', 
-    icon: 'biotech', 
-    image: DiagnosticsImage,
-    ua: 'Комп\'ютерна діагностика', 
-    pl: 'Diagnostyka komputerowa', 
-    price: '120 zł' 
-  },
-  { 
-    id: 'engine', 
-    icon: 'settings_input_component', 
-    image: EngineImage,
-    ua: 'Ремонт двигуна та ГРМ', 
-    pl: 'Naprawa silnika i rozrządu', 
-    price: 'від 600 zł' 
-  },
-  { 
-    id: 'oil', 
-    icon: 'water_drop', 
-    image: OilImage,
-    ua: 'Регламентне ТО', 
-    pl: 'Serwis olejowy / Przegląd', 
-    price: 'від 100 zł' 
-  },
-  { 
-    id: 'brakes', 
-    icon: 'stop_circle', 
-    image: BrakesImage,
-    ua: 'Гальмівна система', 
-    pl: 'Układ hamulcowy', 
-    price: 'від 150 zł' 
-  },
-  { 
-    id: 'gbo', 
-    icon: 'propane_tank', 
-    image: GboImage,
-    ua: 'Сервіс та налаштування ГБО', 
-    pl: 'Serwis i regulacja LPG', 
-    price: 'від 120 zł' 
-  },
-  { 
-    id: 'electric', 
-    icon: 'flash_on', 
-    image: ElectricImage,
-    ua: 'Автоелектрика', 
-    pl: 'Elektryka samochodowa', 
-    price: 'від 150 zł' 
-  },
+
+    { 
+      id: 'diag', 
+      icon: 'biotech', 
+      image: DiagnosticsImage,
+      ua: 'Комп\'ютерна діагностика', 
+      pl: 'Diagnostyka komputerowa', 
+      price: '120 zł',
+      description_ua: 'Професійна комп\'ютерна діагностика авто за допомогою ліцензійного обладнання. Швидке виявлення несправностей електронних систем, двигуна, КПП та інших вузлів.',
+      description_pl: 'Profesjonalna diagnostyka komputerowa przy użyciu licencjonowanego sprzętu. Szybkie wykrywanie usterek systemów elektronicznych, silnika i skrzyni biegów.'
+    },
+    { 
+      id: 'engine', 
+      icon: 'settings_input_component', 
+      image: EngineImage,
+      ua: 'Ремонт двигуна та ГРМ', 
+      pl: 'Naprawa silnika i rozrządu', 
+      price: 'від 600 zł',
+      description_ua: 'Капітальний та поточний ремонт двигунів будь-якої складності. Заміна ГРМ, ремонт головок блоку, заміна поршневих груп.',
+      description_pl: 'Remonty kapitalne i bieżące silników o dowolnej złożoności. Wymiana rozrządu, naprawa głowic cylindrów, wymiana tłoków.'
+    },
+    { 
+      id: 'oil', 
+      icon: 'water_drop', 
+      image: OilImage,
+      ua: 'Регламентне ТО', 
+      pl: 'Serwis olejowy / Przegląd', 
+      price: 'від 100 zł',
+      description_ua: 'Повне технічне обслуговування авто: заміна оливи, фільтрів, гальмівної рідини, охолоджуючої рідини. Дотримуємось регламентів виробника.',
+      description_pl: 'Kompleksowy przegląd techniczny: wymiana oleju, filtrów, płynu hamulcowego, chłodniczego. Przestrzegamy zaleceń producenta.'
+    },
+    { 
+      id: 'brakes', 
+      icon: 'stop_circle', 
+      image: BrakesImage,
+      ua: 'Гальмівна система', 
+      pl: 'Układ hamulcowy', 
+      price: 'від 150 zł',
+      description_ua: 'Діагностика та ремонт гальмівної системи: заміна колодок, дисків, супортів, гальмівних циліндрів. Гарантуємо безпеку та якість.',
+      description_pl: 'Diagnostyka i naprawa układu hamulcowego: wymiana klocków, tarcz, zacisków, cylinderków hamulcowych. Gwarantujemy bezpieczeństwo.'
+    },
+    { 
+      id: 'gbo', 
+      icon: 'propane_tank', 
+      image: GboImage,
+      ua: 'Сервіс та налаштування ГБО', 
+      pl: 'Serwis i regulacja LPG', 
+      price: 'від 120 zł',
+      description_ua: 'Встановлення, налаштування та сервіс газобалонного обладнання. Оптимізація витрати палива, діагностика газових систем.',
+      description_pl: 'Montaż, regulacja i serwis instalacji gazowych. Optymalizacja zużycia paliwa, diagnostyka systemów gazowych.'
+    },
+    { 
+      id: 'electric', 
+      icon: 'flash_on', 
+      image: ElectricImage,
+      ua: 'Автоелектрика', 
+      pl: 'Elektryka samochodowa', 
+      price: 'від 150 zł',
+      description_ua: 'Ремонт електрообладнання авто: стартерів, генераторів, проводки, панелі приладів, освітлення. Діагностика електросхем.',
+      description_pl: 'Naprawa instalacji elektrycznej: rozruszników, alternatorów, okablowania, deski rozdzielczej, oświetlenia. Diagnostyka schematów.'
+    },
 ];
 
 interface ServiceDetails {
@@ -179,6 +192,8 @@ interface ServiceDetails {
   ua: string;
   pl: string;
   price: string;
+  description_ua: string;
+  description_pl: string;
 }
 
 const BookingPopup: React.FC<{ isOpen: boolean; onClose: () => void; lang: Lang; initialService?: string }> = ({ isOpen, onClose, lang, initialService }) => {
@@ -494,11 +509,10 @@ const App: React.FC = () => {
                    {lang === 'UA' ? SERVICES_DATA.find(s => s.id === currentPage)?.ua : SERVICES_DATA.find(s => s.id === currentPage)?.pl}
                  </h1>
                  <p className="text-xl text-gray-500 dark:text-gray-400 leading-relaxed mb-10 font-medium italic text-balance">
-                   {lang === 'UA' 
-                     ? 'Ми знаємо, як ремонтувати авто за заводськими стандартами. Ми цінуємо ваш час, тому пропонуємо залишити заявку: майстер проконсультує вас по телефону, зорієнтує по ціні та запише на зручне вікно.' 
-                     : 'Wiemy jak naprawiać auta zgodnie ze standardami fabrycznymi. Cenimy Twój czas, dlatego proponujemy zostawić zgłoszenie: specjalista skonsultuje Cię telefonicznie, poda wstępną wycenę i umówi dogodny termin.'}
-                 </p>
-                 
+                  {lang === 'UA' 
+                    ? SERVICES_DATA.find(s => s.id === currentPage)?.description_ua
+                    : SERVICES_DATA.find(s => s.id === currentPage)?.description_pl}
+                </p>       
                  <div className="space-y-4 mb-12">
                    {t.advantages.map((item, i) => (
                      <div key={i} className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-apple-dark rounded-xl border border-gray-100 dark:border-white/5">
