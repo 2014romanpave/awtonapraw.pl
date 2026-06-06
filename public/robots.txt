@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://awtonapraw.pl/sitemap.xml
