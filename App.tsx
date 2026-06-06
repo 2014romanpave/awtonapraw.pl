@@ -8,16 +8,16 @@ const OilImage = new URL('./src/assets/images/oil.jpg', import.meta.url).href;
 const BrakesImage = new URL('./src/assets/images/brakes.jpg', import.meta.url).href;
 const GboImage = new URL('./src/assets/images/gbo.jpg', import.meta.url).href;
 const ElectricImage = new URL('./src/assets/images/electric.jpg', import.meta.url).href;
+
 // --- Types & Translations ---
 type Lang = 'UA' | 'PL';
 type Theme = 'light' | 'dark';
 type Page = 'home' | 'diag' | 'engine' | 'oil' | 'brakes' | 'gbo' | 'electric';
 
 // Конфигурация
-const MESSENGER_LINK = "https://t.me/morozovych_ihor"; 
+const BOT_TOKEN = '8083484051:AAF19mlwdxRCYIbE63YMLQGCPTCHEFesFog';
+const CHAT_ID = '8375574565';
 const TARGET_ADDRESS = "Białośliwska 26, 60-418 Poznań";
-const DOMAIN = "awtonapraw.pl";
-// Ссылка для Google Maps Route (директория от текущего места)
 const GOOGLE_MAPS_ROUTE = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(TARGET_ADDRESS)}`;
 
 interface TranslationSet {
@@ -59,12 +59,12 @@ const TRANSLATIONS: Record<Lang, TranslationSet> = {
     },
     services: {
       title: 'Наші експертні рішення.',
-      desc: 'Комплексне обслуговування: від точної комп’ютерної діагностики до складного ремонту.',
+      desc: 'Комплексне обслуговування: від точної комп'ютерної діагностики до складного ремонту.',
       more: 'Детальніше',
     },
     form: {
       title: 'Ми вам зателефонуємо.',
-      desc: 'Залиште ваші контакти, і майстер зв’яжеться з вами для уточнення деталей та запису на візит.',
+      desc: 'Залиште ваші контакти, і майстер зв'яжеться з вами для уточнення деталей та запису на візит.',
       name: "Ваше ім'я",
       phone: 'Номер телефону',
       service: 'Яка послуга цікавить?',
@@ -122,7 +122,6 @@ const TRANSLATIONS: Record<Lang, TranslationSet> = {
 };
 
 const SERVICES_DATA: ServiceDetails[] = [
-
     { 
       id: 'diag', 
       icon: 'biotech', 
@@ -196,6 +195,9 @@ interface ServiceDetails {
   description_pl: string;
 }
 
+// =============================================
+// BOOKING POPUP — с отправкой в Telegram бота
+// =============================================
 const BookingPopup: React.FC<{ isOpen: boolean; onClose: () => void; lang: Lang; initialService?: string }> = ({ isOpen, onClose, lang, initialService }) => {
   const t = TRANSLATIONS[lang].form;
   const [formData, setFormData] = useState({
@@ -203,23 +205,54 @@ const BookingPopup: React.FC<{ isOpen: boolean; onClose: () => void; lang: Lang;
     phone: '',
     service: initialService || t.options[0]
   });
+  const [sending, setSending] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     if (initialService) setFormData(prev => ({ ...prev, service: initialService }));
   }, [initialService]);
 
+  // Сброс состояния при открытии
+  useEffect(() => {
+    if (isOpen) {
+      setSubmitted(false);
+      setSending(false);
+      setFormData({ name: '', phone: '', service: initialService || t.options[0] });
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const text = `Запит на зворотній дзвінок!\nІм'я: ${formData.name}\nТел: ${formData.phone}\nПослуга: ${formData.service}`;
-    const encodedText = encodeURIComponent(text);
-    const finalLink = MESSENGER_LINK.includes('?') 
-      ? `${MESSENGER_LINK}&text=${encodedText}` 
-      : `${MESSENGER_LINK}?text=${encodedText}`;
-    
-    window.open(finalLink, '_blank');
-    onClose();
+    setSending(true);
+
+    const text =
+      `🔧 *Новий запит з сайту awtonapraw.pl*\n\n` +
+      `👤 *Ім'я:* ${formData.name}\n` +
+      `📞 *Телефон:* ${formData.phone}\n` +
+      `🛠 *Послуга:* ${formData.service}`;
+
+    try {
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text,
+          parse_mode: 'Markdown',
+        }),
+      });
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        onClose();
+      }, 3000);
+    } catch {
+      alert(lang === 'UA' ? 'Помилка відправки. Спробуйте ще раз.' : 'Błąd wysyłania. Spróbuj ponownie.');
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -235,25 +268,54 @@ const BookingPopup: React.FC<{ isOpen: boolean; onClose: () => void; lang: Lang;
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-1.5">
             <label className="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">{t.name}</label>
-            <input required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} 
-              className="w-full bg-gray-50 dark:bg-apple-dark border border-gray-100 dark:border-white/10 rounded-xl p-4 dark:text-white outline-none focus:ring-2 focus:ring-primary" 
+            <input
+              required
+              value={formData.name}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              className="w-full bg-gray-50 dark:bg-apple-dark border border-gray-100 dark:border-white/10 rounded-xl p-4 dark:text-white outline-none focus:ring-2 focus:ring-primary"
               placeholder={t.name}
             />
           </div>
           <div className="space-y-1.5">
             <label className="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">{t.phone}</label>
-            <input required type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full bg-gray-50 dark:bg-apple-dark border border-gray-100 dark:border-white/10 rounded-xl p-4 dark:text-white outline-none focus:ring-2 focus:ring-primary" placeholder="+48 ..." />
+            <input
+              required
+              type="tel"
+              value={formData.phone}
+              onChange={e => setFormData({ ...formData, phone: e.target.value })}
+              className="w-full bg-gray-50 dark:bg-apple-dark border border-gray-100 dark:border-white/10 rounded-xl p-4 dark:text-white outline-none focus:ring-2 focus:ring-primary"
+              placeholder="+48 ..."
+            />
           </div>
           <div className="space-y-1.5">
             <label className="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">{t.service}</label>
-            <select value={formData.service} onChange={e => setFormData({...formData, service: e.target.value})} className="w-full bg-gray-50 dark:bg-apple-dark border border-gray-100 dark:border-white/10 rounded-xl p-4 dark:text-white outline-none focus:ring-2 focus:ring-primary appearance-none cursor-pointer">
+            <select
+              value={formData.service}
+              onChange={e => setFormData({ ...formData, service: e.target.value })}
+              className="w-full bg-gray-50 dark:bg-apple-dark border border-gray-100 dark:border-white/10 rounded-xl p-4 dark:text-white outline-none focus:ring-2 focus:ring-primary appearance-none cursor-pointer"
+            >
               {t.options.map(o => <option key={o} value={o}>{o}</option>)}
             </select>
           </div>
-          <button type="submit" className="w-full bg-primary text-white py-5 rounded-xl font-bold text-lg shadow-xl shadow-primary/30 hover:scale-[1.01] active:scale-95 transition-all mt-4 flex items-center justify-center gap-3">
-            <span className="material-symbols-outlined">send</span>
-            {t.submit}
-          </button>
+
+          {submitted ? (
+            <div className="w-full bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 text-green-700 dark:text-green-300 py-5 rounded-xl font-bold text-lg text-center flex items-center justify-center gap-3">
+              <span className="material-symbols-outlined">check_circle</span>
+              {t.success}
+            </div>
+          ) : (
+            <button
+              type="submit"
+              disabled={sending}
+              className="w-full bg-primary text-white py-5 rounded-xl font-bold text-lg shadow-xl shadow-primary/30 hover:scale-[1.01] active:scale-95 transition-all mt-4 flex items-center justify-center gap-3 disabled:opacity-60 disabled:scale-100 disabled:cursor-not-allowed"
+            >
+              <span className="material-symbols-outlined">{sending ? 'hourglass_empty' : 'send'}</span>
+              {sending
+                ? (lang === 'UA' ? 'Відправка...' : 'Wysyłanie...')
+                : t.submit
+              }
+            </button>
+          )}
         </form>
       </div>
     </div>
@@ -379,7 +441,7 @@ const App: React.FC = () => {
               <div className="relative animate-in fade-in zoom-in duration-1000 delay-300">
                 <div className="absolute -inset-10 bg-primary/10 blur-[120px] rounded-full opacity-60"></div>
                 <div className="relative rounded-apple-2xl overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] border-[10px] border-white dark:border-apple-dark aspect-square lg:aspect-[4/5] transform hover:rotate-1 transition-transform duration-700">
-                <img src={HeroImage} className="w-full h-full object-cover" alt="Service Excellence" />
+                  <img src={HeroImage} className="w-full h-full object-cover" alt="Service Excellence" />
                 </div>
               </div>
             </section>
@@ -453,7 +515,6 @@ const App: React.FC = () => {
                   <p className="text-xl text-gray-500 dark:text-gray-400 mb-12 max-w-md">{t.form.desc}</p>
                   
                   <div className="space-y-8">
-                    {/* Кликабельный адрес для построения маршрута */}
                     <button onClick={openRoute} className="flex items-center gap-6 group w-full text-left">
                       <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
                         <span className="material-symbols-outlined text-2xl">location_on</span>
