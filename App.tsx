@@ -352,7 +352,7 @@ const Navbar: React.FC<{ lang: Lang; setLang: (l: Lang) => void; setPage: (p: Pa
           </div>
         </button>
 
-        <nav className="hidden lg:flex items-center gap-10 text-[13px] font-semibold text-apple-dark/70 dark:text-apple-gray/70 tracking-widest">
+        <nav className="hidden lg:flex items-center gap-10 text-[13px] font-semibold text-apple-dark/70 dark:text-apple-gray/70 uppercase tracking-widest">
           <button onClick={() => { setPage('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-primary transition-colors">{t.home}</button>
           <a href="#services" onClick={(e) => handleNavClick(e, 'services')} className="hover:text-primary transition-colors">{t.services}</a>
           <a href="#features" onClick={(e) => handleNavClick(e, 'features')} className="hover:text-primary transition-colors">{t.about}</a>
