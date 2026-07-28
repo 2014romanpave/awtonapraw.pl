@@ -419,7 +419,23 @@ const ServicePage: React.FC<{ lang: Lang; openBooking: (s?: string) => void }> =
   const serviceId = SLUG_TO_ID[slug];
   const service = SERVICES_DATA.find(s => s.id === serviceId);
 
-  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }); }, [location.pathname]);
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    
+    // Динамический canonical для SEO
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.rel = 'canonical';
+      document.head.appendChild(canonical);
+    }
+    canonical.href = `https://awtonapraw.pl${location.pathname}`;
+  
+    return () => {
+      const link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+      if (link) link.href = 'https://awtonapraw.pl/';
+    };
+  }, [location.pathname]);
 
   if (!service) { navigate('/'); return null; }
 
