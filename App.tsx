@@ -504,6 +504,72 @@ const Footer: React.FC<{ lang: Lang }> = ({ lang }) => {
   );
 };
 
+const COOKIE_KEY = 'cookie-consent';
+
+const COOKIE_TEXT: Record<Lang, { text: string; accept: string; reject: string }> = {
+  PL: {
+    text: 'Używamy plików cookie do analityki i reklam Google, aby ulepszać stronę. Możesz zaakceptować lub odrzucić te pliki.',
+    accept: 'Akceptuję',
+    reject: 'Odrzuć',
+  },
+  UA: {
+    text: 'Ми використовуємо cookie для аналітики та реклами Google, щоб покращувати сайт. Ви можете прийняти або відхилити їх.',
+    accept: 'Приймаю',
+    reject: 'Відхилити',
+  },
+};
+
+const applyConsent = (granted: boolean) => {
+  const value = granted ? 'granted' : 'denied';
+  const gtag = (window as any).gtag;
+  if (typeof gtag === 'function') {
+    gtag('consent', 'update', {
+      ad_storage: value,
+      ad_user_data: value,
+      ad_personalization: value,
+      analytics_storage: value,
+    });
+  }
+};
+
+const CookieBanner: React.FC<{ lang: Lang }> = ({ lang }) => {
+  const [visible, setVisible] = useState(false);
+  const t = COOKIE_TEXT[lang];
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(COOKIE_KEY);
+      if (saved === 'granted') {
+        applyConsent(true);
+      } else if (saved !== 'denied') {
+        setVisible(true);
+      }
+    } catch {
+      setVisible(true);
+    }
+  }, []);
+
+  const choose = (granted: boolean) => {
+    try { localStorage.setItem(COOKIE_KEY, granted ? 'granted' : 'denied'); } catch {}
+    applyConsent(granted);
+    setVisible(false);
+  };
+
+  if (!visible) return null;
+
+  return (
+    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:bottom-6 md:max-w-md z-[900]">
+      <div className="glass border border-gray-200/60 dark:border-white/10 rounded-apple-xl shadow-2xl p-6">
+        <p className="text-[14px] leading-relaxed text-gray-600 dark:text-gray-300 mb-5">{t.text}</p>
+        <div className="flex gap-3">
+          <button onClick={() => choose(true)} className="flex-1 bg-primary text-white py-3 rounded-xl font-bold text-[14px] shadow-lg shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all">{t.accept}</button>
+          <button onClick={() => choose(false)} className="flex-1 bg-gray-100 dark:bg-white/10 text-apple-dark dark:text-white py-3 rounded-xl font-bold text-[14px] hover:bg-gray-200 dark:hover:bg-white/20 transition-all">{t.reject}</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const AppInner: React.FC = () => {
   const [lang, setLang] = useState<Lang>('PL');
   const [theme, setTheme] = useState<Theme>('light');
@@ -531,6 +597,7 @@ const AppInner: React.FC = () => {
         </Routes>
       </main>
       <Footer lang={lang} />
+      <CookieBanner lang={lang} />
     </div>
   );
 };
