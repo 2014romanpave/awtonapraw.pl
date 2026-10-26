@@ -18,6 +18,13 @@ const CHAT_ID = '8375574565';
 const TARGET_ADDRESS = "Białośliwska 26, 60-418 Poznań";
 const GOOGLE_MAPS_ROUTE = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(TARGET_ADDRESS)}`;
 
+const trackConversion = () => {
+  const gtag = (window as any).gtag;
+  if (typeof gtag === 'function') {
+    gtag('event', 'conversion', { send_to: 'AW-18531217286/Jgx_CNnvkaodEIbfr4RF' });
+  }
+};
+
 const SERVICE_SLUGS: Record<string, string> = {
   diag: '/diagnostyka-komputerowa',
   engine: '/naprawa-silnika',
@@ -177,11 +184,13 @@ const BookingPopup: React.FC<{ isOpen: boolean; onClose: () => void; lang: Lang;
     setSending(true);
     const text = `🔧 *Новий запит з сайту awtonapraw.pl*\n\n👤 *Імя:* ${formData.name}\n📞 *Телефон:* ${formData.phone}\n🛠 *Послуга:* ${formData.service}`;
     try {
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'Markdown' }),
       });
+      if (!res.ok) throw new Error('Telegram error');
+      trackConversion();
       setSubmitted(true);
       setTimeout(() => { setSubmitted(false); onClose(); }, 3000);
     } catch {
