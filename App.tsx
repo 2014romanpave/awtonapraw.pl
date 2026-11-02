@@ -505,7 +505,7 @@ const Footer: React.FC<{ lang: Lang }> = ({ lang }) => {
         <div className="pt-12 border-t border-gray-200/50 dark:border-white/5 text-center">
           <p className="text-[13px] font-medium text-gray-400 dark:text-gray-500">
             Website developed by:{' '}
-            <a href="https://highfalutin-receipt-d7a.notion.site/UX-UI-Designer-5ba1936438ad4bc7beaaf9e8dff8c7e5" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-bold transition-all">Pavel Roman</a>
+            <a href="https://pavelroman.com/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-bold transition-all">Pavel Roman</a>
           </p>
         </div>
       </div>
